@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="lib2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/machbase-binding/lib/jackson-core-asl-1.9.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/machbase-binding/lib/machbase-client-5.5.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/machbase-binding/lib/core-0.13.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/machbase-binding/lib/HdrHistogram-2.1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/machbase-binding/lib/jackson-mapper-asl-1.9.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/machbase-binding/lib/machbase-binding-0.13.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/machbase-binding/lib/htrace-core4-4.1.0-incubating.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

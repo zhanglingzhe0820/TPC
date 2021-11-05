@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/iotdb-binding/lib/iotdb-session-0.12.2-jar-with-dependencies.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/iotdb-binding/lib/iotdb-binding-0.13.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/iotdb-binding/lib/core-0.13.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/iotdb-binding/lib/htrace-core4-4.1.0-incubating.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/iotdb-binding/lib/HdrHistogram-2.1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

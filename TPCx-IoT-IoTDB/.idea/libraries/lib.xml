@@ -1,0 +1,68 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/jsr305-1.3.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-cli-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hbase10-binding-0.13.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/joni-2.1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hbase-protocol-1.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-lang-2.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/stax-api-1.0-2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-math3-3.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-digester-1.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-logging-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hadoop-auth-2.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/jetty-util-6.1.26.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/apacheds-i18n-2.0.0-M15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-httpclient-3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/slf4j-log4j12-1.7.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/findbugs-annotations-1.3.9-1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-collections-3.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hadoop-common-2.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-el-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/htrace-core4-4.1.0-incubating.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/jsch-0.1.42.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hbase-client-1.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/activation-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/protobuf-java-2.5.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hadoop-mapreduce-client-core-2.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hbase-common-1.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hbase-annotations-1.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/slf4j-api-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/jackson-mapper-asl-1.8.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-beanutils-1.7.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-codec-1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/httpcore-4.2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/log4j-1.2.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/core-0.13.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hadoop-yarn-api-2.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/netty-3.6.2.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/guava-12.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-compress-1.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/api-asn1-api-1.0.0-M20.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/jcodings-1.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/jackson-core-asl-1.9.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/snappy-java-1.0.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/api-util-1.0.0-M20.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/jaxb-api-2.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-beanutils-core-1.8.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/netty-all-4.0.23.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/paranamer-2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-configuration-1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hadoop-annotations-2.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/xz-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/htrace-core-3.1.0-incubating.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/httpclient-4.2.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/xmlenc-0.52.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/zookeeper-3.4.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/apacheds-kerberos-codec-2.0.0-M15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/commons-net-3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/HdrHistogram-2.1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/avro-1.7.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/tpcx-iot/hbase10-binding/lib/hadoop-yarn-common-2.5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
