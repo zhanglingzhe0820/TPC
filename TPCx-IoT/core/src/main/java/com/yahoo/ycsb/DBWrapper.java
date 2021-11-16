@@ -149,6 +149,7 @@ public class DBWrapper extends DB {
       long ist = this.measurements.getIntendedtartTimeNs();
       long st = System.nanoTime();
       Status res = this.db.scan(table, key, client, timestamp, fields, runStartTime, result1, result2);
+
       long en = System.nanoTime();
       measure("SCAN", res, ist, st, en);
       this.measurements.reportStatus("SCAN", res);

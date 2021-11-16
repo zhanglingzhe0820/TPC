@@ -143,7 +143,7 @@ clush -w $k -B "mkdir -p $PWD/logs"
 j=$(echo $j+1 | bc)
 done
 
-for i in `seq 1 2 `;
+for i in `seq 1`;
 do
 benchmark_result=1
 # Data Delete
@@ -157,8 +157,36 @@ echo -e "${green}$sep${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
 echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
 echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
 
-#echo $TRUNCATE_TABLE | $SUT_SHELL
-#sleep 60
+echo -e "${green}Warmup Run - Start - `date`${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
+# Warmup Run for drivers
+for k in `cat driver_host_list.txt`;
+do
+echo $k
+clush -w $k -B "nohup $PWD/TPC-IoT-client.sh $WARMUP_RECORDS_COUNT $prefix $i $k $DATABASE_CLIENT $PWD $NUM_INSTANCES_PER_CLIENT $NUM_THREADS_PER_INSTANCE $SUT_PARAMETERS workloadiot warmup > $PWD/logs/IoT-Workload-run-time-warmup$i-$k.txt" &
+pids="$pids $!"
+done
+
+
+echo "master file pids = $pids"
+wait $pids
+echo "All drivers have completed" | tee -a ./TPCx-IoT-result-"$prefix".log
+echo -e "${green}Warmup Run - End - `date`${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
+max=0
+for k in `cat driver_host_list.txt`;
+do
+t=$(clush -w $k -B "grep 'Total Time' $PWD/logs/TPCx-IoT-result-$prefix-$k-warmup$i.log")
+echo $t
+n=$(echo $t|awk '{print $13}')
+ if (( $(bc <<< "$n > $max") ))
+ then
+    max="$n"
+ fi
+done
+echo $max
+total_time_warmup_in_seconds=$max
+# Delete data after warmup run
+echo $TRUNCATE_TABLE | $SUT_SHELL
+sleep 5
 echo -e "${green}Measured Run - Start - `date`${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
 pids=""
 # Start the driver on each of the clients
@@ -253,7 +281,7 @@ perf_metric=$(echo "scale=4;$scale_factor/$total_time_in_seconds" | bc)
 echo -e "${green}$sep============${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
 echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
 echo -e "${green}md5sum of core components:${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
-md5sum ./TPC-IoT-master.sh ./tpcx-iot/lib/core-0.13.0-SNAPSHOT.jar ./IoT_cluster_validate_suite.sh | tee -a $PWD/TPCx-IoT-result-"$prefix".log
+md5sum ./TPC-IoT-master.sh ./IoT_cluster_validate_suite.sh | tee -a $PWD/TPCx-IoT-result-"$prefix".log
 echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
 
 echo -e "${green}$sep============${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log

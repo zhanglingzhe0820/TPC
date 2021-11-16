@@ -20,6 +20,6 @@ source ./Benchmark_Macros.sh
 #  @author Chinmayi Narasimhadevara
 #
 #
-hadoop fs -stat %r $SUT_TABLE_PATH | head -n 1
+#hadoop fs -stat %r $SUT_TABLE_PATH | head -n 1
 
 #hadoop fs -stat %r $1 | head -n 1

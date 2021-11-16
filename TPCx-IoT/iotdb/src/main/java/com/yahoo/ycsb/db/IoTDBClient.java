@@ -119,9 +119,9 @@ public class IoTDBClient extends DB {
       Vector<HashMap<String, ByteIterator>> result2) {
     String deviceID = String.format("root.%s.%s", clientFilter, filter);
     long newTimeStamp = Long.parseLong(timestamp);
-    Status s1 = scanHelper(deviceID, newTimeStamp, fields, result1);
+    Status s1 = scanHelper(deviceID, newTimeStamp - 500000000L, fields, result1);
     if (runStartTime > 0L) {
-      long timestampVal = newTimeStamp - 1000 * 60 * 60L;
+      long timestampVal = newTimeStamp - 1000000000L;
       Status s2 = scanHelper(deviceID, timestampVal, fields, result2);
       if (s1.isOk() && s2.isOk()) {
         return Status.OK;
@@ -133,9 +133,9 @@ public class IoTDBClient extends DB {
   private Status scanHelper(String deviceID, long timestamp, Set<String> fields,
       Vector<HashMap<String, ByteIterator>> result) {
     long startTime = timestamp;
-    long endTime = timestamp + 5000L;
     try {
       synchronized (CONNECTION_LOCK) {
+        long queryStartTime = System.currentTimeMillis();
         SessionDataSet dataSet = session
             .executeRawDataQuery(Collections.singletonList(deviceID), startTime, Long.MAX_VALUE);
         dataSet.setFetchSize(FETCH_SIZE);
@@ -152,12 +152,10 @@ public class IoTDBClient extends DB {
           }
           result.add(rowResult);
         }
-        if (debug) {
-          System.out.println(String
-              .format("scan %d results from server succeed for deviceID %s from %s to %s",
-                  result.size(),
-                  deviceID, transferLongToDate(startTime), transferLongToDate(endTime)));
-        }
+        System.out.println(String
+            .format("scan %d results from server succeed for deviceID %s from %s to end by %d ms",
+                result.size(), deviceID, transferLongToDate(startTime),
+                System.currentTimeMillis() - queryStartTime));
         dataSet.closeOperationHandle();
       }
     } catch (IoTDBConnectionException | StatementExecutionException e) {
