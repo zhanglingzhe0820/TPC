@@ -5,6 +5,8 @@ import com.yahoo.ycsb.ByteIterator;
 import com.yahoo.ycsb.DB;
 import com.yahoo.ycsb.DBException;
 import com.yahoo.ycsb.Status;
+import com.yahoo.ycsb.generator.ScrambledZipfianGenerator;
+import com.yahoo.ycsb.generator.UniformLongGenerator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 import org.apache.iotdb.rpc.IoTDBConnectionException;
@@ -38,7 +41,12 @@ public class IoTDBClient extends DB {
   private String db_host = "192.168.130.34";
   private int db_port = 6667;
   private int cache_threshold = 5000;
+  private String delay_distribution = "none";
+  private long query_interval = 1000000000L;
+  private int data_num = 5000000;
   private boolean debug = true;
+  private int currentInsertNum = 0;
+  private long[] delays;
 
   public void init() throws DBException {
     if ((getProperties().getProperty("debug") != null)
@@ -47,16 +55,48 @@ public class IoTDBClient extends DB {
     }
     if (getProperties().containsKey("iotdbinfo")) {
       String[] serverInfo = getProperties().getProperty("iotdbinfo").split(":");
-      if (serverInfo.length != 3) {
-        System.err.println("Parse IoTDB Server info failed,it should be ip:port:threshold");
+      if (serverInfo.length != 6) {
+        System.err
+            .println("Parse IoTDB Server info failed,it should be ip:port:threshold:distribution");
       } else {
         this.db_host = serverInfo[0];
         this.db_port = Integer.parseInt(serverInfo[1]);
         this.cache_threshold = Integer.parseInt(serverInfo[2]);
+        this.delay_distribution = serverInfo[3];
+        this.query_interval = Long.parseLong(serverInfo[4]);
+        this.data_num = Integer.parseInt(serverInfo[5]);
+        delays = new long[data_num];
+        Random random = new Random();
+        switch (delay_distribution) {
+          case "uniform":
+            for (int i = 0; i < data_num; i++) {
+              long offset = (long) (random.nextFloat() * this.query_interval);
+              delays[i] = -offset;
+            }
+            break;
+          case "normal":
+            UniformLongGenerator uniformGenerator = new UniformLongGenerator(0, this.query_interval);
+            for (int i = 0; i < data_num; i++) {
+              long offset = uniformGenerator.nextValue();
+              delays[i] = -offset;
+            }
+            break;
+          case "zipfian":
+            ScrambledZipfianGenerator zipfianGenerator = new ScrambledZipfianGenerator(0, this.query_interval);
+            for (int i = 0; i < data_num; i++) {
+              long offset = zipfianGenerator.nextValue();
+              delays[i] = -offset;
+            }
+            break;
+          case "none":
+          default:
+            break;
+        }
         if (debug) {
           System.out
-              .println(String.format("Parse IoTDB Server info succeed: %s:%d:%d", db_host, db_port,
-                  cache_threshold));
+              .println(
+                  String.format("Parse IoTDB Server info succeed: %s:%d:%d:%s", db_host, db_port,
+                      cache_threshold, delay_distribution));
         }
       }
     }
@@ -119,9 +159,9 @@ public class IoTDBClient extends DB {
       Vector<HashMap<String, ByteIterator>> result2) {
     String deviceID = String.format("root.%s.%s", clientFilter, filter);
     long newTimeStamp = Long.parseLong(timestamp);
-    Status s1 = scanHelper(deviceID, newTimeStamp - 500000000L, fields, result1);
+    Status s1 = scanHelper(deviceID, newTimeStamp - query_interval / 2, fields, result1);
     if (runStartTime > 0L) {
-      long timestampVal = newTimeStamp - 1000000000L;
+      long timestampVal = newTimeStamp - query_interval;
       Status s2 = scanHelper(deviceID, timestampVal, fields, result2);
       if (s1.isOk() && s2.isOk()) {
         return Status.OK;
@@ -181,14 +221,17 @@ public class IoTDBClient extends DB {
     String[] paras = key.split(":");
     String deviceID = String.format("root.%s.%s", paras[0], paras[1]);
     long timestamp = Long.parseLong(paras[2]);
+    timestamp = timestamp + delays[Math.min(currentInsertNum, this.data_num - 1)];
 
     try {
       Map<String, Tablet> tablets = null;
       synchronized (CONNECTION_LOCK) {
         cacheData.computeIfAbsent(deviceID, k -> new ArrayList<>())
             .add(new Pair<>(timestamp,
-                new Pair<>(values.keySet().iterator().next(), "012345678901234567890123456789".getBytes())));
+                new Pair<>(values.keySet().iterator().next(),
+                    "012345678901234567890123456789".getBytes())));
         cacheNum++;
+        currentInsertNum++;
         if (cacheNum >= cache_threshold) {
           tablets = generateTablets();
           cacheNum = 0;
