@@ -46,6 +46,8 @@ public class DBWrapper extends DB {
 
   private final String scopeStringUpdate;
 
+  private boolean isQuerying = false;
+
   public DBWrapper(DB db, Tracer tracer) {
     this.db = db;
     this.measurements = Measurements.getMeasurements();
@@ -155,22 +157,27 @@ public class DBWrapper extends DB {
   public Status scan(String table, String key, String client, String timestamp, Set<String> fields,
       long runStartTime, Vector<HashMap<String, ByteIterator>> result1,
       Vector<HashMap<String, ByteIterator>> result2) {
-
-    try (TraceScope span = this.tracer.newScope(this.scopeStringScan)) {
-      long ist = this.measurements.getIntendedtartTimeNs();
-      long st = System.nanoTime();
-      Status res = this.db
-          .scan(table, key, client, timestamp, fields, runStartTime, result1, result2);
-      long en = System.nanoTime();
-      measure("SCAN", res, ist, st, en);
-      this.measurements.reportStatus("SCAN", res);
-      if (result1.size() <= 0 || result2.size() <= 0) {
-        System.err.println(
-            "Unable to get query results from database, please check the status of the table ");
-        return res;
-      }
-      return res;
+    if (!isQuerying) {
+      isQuerying = true;
+      Thread thread = new Thread(() -> {
+        try (TraceScope span = this.tracer.newScope(this.scopeStringScan)) {
+          long ist = this.measurements.getIntendedtartTimeNs();
+          long st = System.nanoTime();
+          Status res = this.db
+              .scan(table, key, client, timestamp, fields, runStartTime, result1, result2);
+          long en = System.nanoTime();
+          measure("SCAN", res, ist, st, en);
+          this.measurements.reportStatus("SCAN", res);
+          if (result1.size() <= 0 || result2.size() <= 0) {
+            System.err.println(
+                "Unable to get query results from database, please check the status of the table ");
+          }
+          isQuerying = false;
+        }
+      });
+      thread.start();
     }
+    return Status.OK;
   }
 
   private void measure(String op, Status result, long intendedStartTimeNanos, long startTimeNanos,
