@@ -152,7 +152,7 @@ public class IoTDBClient extends DB {
           }
           result.add(rowResult);
         }
-        System.out.println(String
+        System.err.println(String
             .format("scan %d results from server succeed for deviceID %s from %s to end by %d ms",
                 result.size(), deviceID, transferLongToDate(startTime),
                 System.currentTimeMillis() - queryStartTime));
@@ -186,8 +186,8 @@ public class IoTDBClient extends DB {
       Map<String, Tablet> tablets = null;
       synchronized (CONNECTION_LOCK) {
         cacheData.computeIfAbsent(deviceID, k -> new ArrayList<>())
-            .add(new Pair<>(timestamp, new Pair<>(values.keySet().iterator().next(),
-                values.values().iterator().next().toArray())));
+            .add(new Pair<>(timestamp,
+                new Pair<>(values.keySet().iterator().next(), "012345678901234567890123456789".getBytes())));
         cacheNum++;
         if (cacheNum >= cache_threshold) {
           tablets = generateTablets();

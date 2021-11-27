@@ -15,6 +15,7 @@ import org.apache.htrace.core.TraceScope;
 import org.apache.htrace.core.Tracer;
 
 public class DBWrapper extends DB {
+
   private final DB db;
 
   private final Measurements measurements;
@@ -73,14 +74,18 @@ public class DBWrapper extends DB {
       this.reportLatencyForEachError = Boolean.parseBoolean(getProperties()
           .getProperty("reportlatencyforeacherror", "false"));
       if (!this.reportLatencyForEachError) {
-        String latencyTrackedErrorsProperty = getProperties().getProperty("latencytrackederrors", null);
-        if (latencyTrackedErrorsProperty != null)
+        String latencyTrackedErrorsProperty = getProperties()
+            .getProperty("latencytrackederrors", null);
+        if (latencyTrackedErrorsProperty != null) {
           this.latencyTrackedErrors = new HashSet<>(Arrays.asList(latencyTrackedErrorsProperty
               .split(",")));
+        }
       }
-      System.err.println("DBWrapper: report latency for each error is " + this.reportLatencyForEachError + " and specific error codes to track for latency are: " + this.latencyTrackedErrors
+      System.err.println(
+          "DBWrapper: report latency for each error is " + this.reportLatencyForEachError
+              + " and specific error codes to track for latency are: " + this.latencyTrackedErrors
 
-          .toString());
+              .toString());
     }
   }
 
@@ -94,7 +99,8 @@ public class DBWrapper extends DB {
     }
   }
 
-  public Status read(String table, String key, Set<String> fields, HashMap<String, ByteIterator> result) {
+  public Status read(String table, String key, Set<String> fields,
+      HashMap<String, ByteIterator> result) {
     try (TraceScope span = this.tracer.newScope(this.scopeStringRead)) {
       long ist = this.measurements.getIntendedtartTimeNs();
       long st = System.nanoTime();
@@ -106,7 +112,8 @@ public class DBWrapper extends DB {
     }
   }
 
-  public Status scan(String table, String startkey, int recordcount, Set<String> fields, Vector<HashMap<String, ByteIterator>> result) {
+  public Status scan(String table, String startkey, int recordcount, Set<String> fields,
+      Vector<HashMap<String, ByteIterator>> result) {
     try (TraceScope span = this.tracer.newScope(this.scopeStringScan)) {
       long ist = this.measurements.getIntendedtartTimeNs();
       long st = System.nanoTime();
@@ -116,7 +123,7 @@ public class DBWrapper extends DB {
       this.measurements.reportStatus("SCAN", res);
       HashMap<String, ArrayList<Double>> value = new HashMap<>();
       for (int i = 0; i < result.size(); i++) {
-        String hashVal = ((ByteIterator)((HashMap)result.get(i)).get("field0")).toString();
+        String hashVal = ((ByteIterator) ((HashMap) result.get(i)).get("field0")).toString();
         String name = hashVal.split(":")[0];
         double val = Double.valueOf(hashVal.split(":")[2]).doubleValue();
         if (value.containsKey(name)) {
@@ -133,8 +140,9 @@ public class DBWrapper extends DB {
           String iotKey = it.next();
           List<Double> l = value.get(iotKey);
           double sum = 0.0D;
-          for (int k = 0; k < l.size(); k++)
-            sum += ((Double)l.get(k)).doubleValue();
+          for (int k = 0; k < l.size(); k++) {
+            sum += ((Double) l.get(k)).doubleValue();
+          }
           double avgVal = sum / l.size();
           System.out.println("Avg Value for " + iotKey + "=" + avgVal);
           it.remove();
@@ -144,53 +152,41 @@ public class DBWrapper extends DB {
     }
   }
 
-  public Status scan(String table, String key, String client, String timestamp, Set<String> fields, long runStartTime, Vector<HashMap<String, ByteIterator>> result1, Vector<HashMap<String, ByteIterator>> result2) {
+  public Status scan(String table, String key, String client, String timestamp, Set<String> fields,
+      long runStartTime, Vector<HashMap<String, ByteIterator>> result1,
+      Vector<HashMap<String, ByteIterator>> result2) {
+
     try (TraceScope span = this.tracer.newScope(this.scopeStringScan)) {
       long ist = this.measurements.getIntendedtartTimeNs();
       long st = System.nanoTime();
-      Status res = this.db.scan(table, key, client, timestamp, fields, runStartTime, result1, result2);
-
+      Status res = this.db
+          .scan(table, key, client, timestamp, fields, runStartTime, result1, result2);
       long en = System.nanoTime();
       measure("SCAN", res, ist, st, en);
       this.measurements.reportStatus("SCAN", res);
-      HashMap<String, ArrayList<Double>> value = new HashMap<>();
-      double val = 0.0D;
-      int i;
-      for (i = 0; i < result1.size(); i++) {
-        String hashVal = ((ByteIterator)((HashMap)result1.get(i)).get("field0")).toString();
-        val += Double.valueOf(hashVal.split(":")[2]).doubleValue();
-      }
-      if (result1.size() > 0) {
-        double avgVal = val / result1.size();
-        System.out.println("Latest Time Interval :: Avg Value for " + key + "=" + avgVal);
-      } else {
-        System.err.println("Unable to get query results from database, please check the status of the table ");
+      if (result1.size() <= 0 || result2.size() <= 0) {
+        System.err.println(
+            "Unable to get query results from database, please check the status of the table ");
         return res;
-      }
-      val = 0.0D;
-      for (i = 0; i < result2.size(); i++) {
-        String hashVal = ((ByteIterator)((HashMap)result2.get(i)).get("field0")).toString();
-        val += Double.valueOf(hashVal.split(":")[2]).doubleValue();
-      }
-      if (val > 0.0D) {
-        double avgVal2 = val / result2.size();
-        System.out.println("30 Min Window Time Interval :: Avg Value for " + key + "=" + avgVal2);
       }
       return res;
     }
   }
 
-  private void measure(String op, Status result, long intendedStartTimeNanos, long startTimeNanos, long endTimeNanos) {
+  private void measure(String op, Status result, long intendedStartTimeNanos, long startTimeNanos,
+      long endTimeNanos) {
     String measurementName = op;
-    if (result == null || !result.isOk())
+    if (result == null || !result.isOk()) {
       if (this.reportLatencyForEachError || this.latencyTrackedErrors
           .contains(result.getName())) {
         measurementName = op + "-" + result.getName();
       } else {
         measurementName = op + "-FAILED";
       }
-    this.measurements.measure(measurementName, (int)((endTimeNanos - startTimeNanos) / 1000L));
-    this.measurements.measureIntended(measurementName, (int)((endTimeNanos - intendedStartTimeNanos) / 1000L));
+    }
+    this.measurements.measure(measurementName, (int) ((endTimeNanos - startTimeNanos) / 1000L));
+    this.measurements
+        .measureIntended(measurementName, (int) ((endTimeNanos - intendedStartTimeNanos) / 1000L));
   }
 
   public Status update(String table, String key, HashMap<String, ByteIterator> values) {

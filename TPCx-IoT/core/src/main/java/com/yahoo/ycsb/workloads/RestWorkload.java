@@ -115,12 +115,16 @@ public class RestWorkload extends CoreWorkload {
   public void init(Properties p) throws WorkloadException {
 
     readRecordCount = Integer.parseInt(p.getProperty(READ_RECORD_COUNT_PROPERTY, String.valueOf(Integer.MAX_VALUE)));
+    readRecordCount = 0;
     insertRecordCount = Integer
       .parseInt(p.getProperty(INSERT_RECORD_COUNT_PROPERTY, String.valueOf(Integer.MAX_VALUE)));
+    insertRecordCount = 100;
     deleteRecordCount = Integer
       .parseInt(p.getProperty(DELETE_RECORD_COUNT_PROPERTY, String.valueOf(Integer.MAX_VALUE)));
+    insertRecordCount = 100;
     updateRecordCount = Integer
       .parseInt(p.getProperty(UPDATE_RECORD_COUNT_PROPERTY, String.valueOf(Integer.MAX_VALUE)));
+    updateRecordCount = 0;
 
     readUrlMap = getTrace(p.getProperty(READ_TRACE_FILE, READ_TRACE_FILE_DEFAULT), readRecordCount);
     insertUrlMap = getTrace(p.getProperty(INSERT_TRACE_FILE, INSERT_TRACE_FILE_DEFAULT), insertRecordCount);

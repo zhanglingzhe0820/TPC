@@ -1,4 +1,4 @@
-package com.ya.db;
+package com.yahoo.ycsb;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;

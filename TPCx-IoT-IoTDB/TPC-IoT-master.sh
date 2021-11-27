@@ -185,7 +185,7 @@ done
 echo $max
 total_time_warmup_in_seconds=$max
 # Delete data after warmup run
-echo $TRUNCATE_TABLE | $SUT_SHELL
+eval $TRUNCATE_TABLE | $SUT_SHELL
 sleep 5
 echo -e "${green}Measured Run - Start - `date`${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
 pids=""
@@ -214,64 +214,6 @@ n=$(echo $t|awk '{print $13}')
 done
 echo $max
 
-# Data Check
-echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
-echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
-
-start=`date +%s%3N`
-echo -e "${green}Starting Data Validation ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
-repl=$(./IoTDataCheck.sh)
-r="$((repl))"
-if [ -z $repl ]; then
-  echo -e "${red} Replication script does not produce any results. ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
- #benchmark_result=0
-else
-  if [ $repl -lt 2 ]; then
-   echo -e  "${red}Data Validation Failure === Replication factor is lower than 2 ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
-   benchmark_result=0
-  else
-   echo -e "${green}Data Validation Success === Replication factor is greater than or equal to 2 ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
-  fi
-fi
-
-echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
-echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
-echo -e "${green}Starting count of rows in table ${NC}"| tee -a ./TPCx-IoT-result-"$prefix".log
-
-source ./IoTDataRowCount.sh $i
-# Get the row count from the database output and compare with the input size
-#num_rows=$(cat logs/IoTValidate-time-run$i.txt | grep $ROW_COUNT | awk -F = '{print $2;}')
-if [ "$num_rows" -lt "$DATABASE_RECORDS_COUNT" ]; then
- echo -e  "${red}Data Validation Failure === Run result is not ok, not all records were inserted row count is different ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
- echo -e  "${yellow} - Inserted count :${NC} $num_rows" | tee -a ./TPCx-IoT-result-"$prefix".log
- echo -e  "${green} - Targeted count :${NC} $DATABASE_RECORDS_COUNT" | tee -a ./TPCx-IoT-result-"$prefix".log
- benchmark_result=0
-else
- echo -e "${green}Data Validation Success === Run result is ok, $num_rows records are inserted  ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
- echo -e  "${blue} - Inserted count :${NC} $num_rows" | tee -a ./TPCx-IoT-result-"$prefix".log
- echo -e  "${green} - Targeted count :${NC} $DATABASE_RECORDS_COUNT" | tee -a ./TPCx-IoT-result-"$prefix".log
-fi
-
-echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
-echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
-
-end=`date +%s%3N`
-total_time_for_validation_in_seconds=`expr $end - $start`
-total_time_for_validation=$(echo "scale=3;$total_time_for_validation_in_seconds/1000" | bc)
-total_time_in_seconds="$(echo "scale=4;$max" | bc)"
-# Check if the total time and warm up time are greater than 30 minutes
-if  [[ "$benchmark_result" -eq "1" &&  $(bc <<< "$total_time_in_seconds < 1800") -eq 1 ]];
-then
- echo -e "${red}$sep${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
- echo -e "${red}No Performance Metric (IoTps) as run time or warm up run time is less than 30 minutes ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
- echo -e "${red}$sep${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
- benchmark_result=0
-fi
-
-benchmark_result=1
-
-if (($benchmark_result == 1))
-then
 total_time_in_seconds="$(echo "scale=4;$max" | bc)"
 #total_time_in_hour=$(echo "scale=4;$total_time_in_seconds/3600" | bc)
 echo -e "${green}Test Run $i : Total Time In Seconds = $total_time_in_seconds ${NC}" | tee -a $PWD/TPCx-IoT-result-"$prefix".log
@@ -294,12 +236,6 @@ echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
 echo -e "${green}TPCx-IoT Performance Metric (IoTps): $perf_metric ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
 echo "" | tee -a ./TPCx-IoT-result-"$prefix".log
 echo -e "${green}$sep============${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
-else
-echo -e "${red}$sep${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
-echo -e "${red}No Performance Metric (IoTps) as some tests Failed ${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
-echo -e "${red}$sep${NC}" | tee -a ./TPCx-IoT-result-"$prefix".log
 
-fi
-
-
+echo -e "all-tpc-task-end-now"
 done

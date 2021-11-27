@@ -538,9 +538,9 @@ public class CoreWorkload extends Workload {
     if (p == null)
       throw new IllegalArgumentException("Properties object cannot be null");
     double insertproportion = Double.parseDouble(p
-        .getProperty("insertproportion", "0.8"));
+        .getProperty("insertproportion", "1.0"));
     double scanproportion = Double.parseDouble(p
-        .getProperty("scanproportion", "0.2"));
+        .getProperty("scanproportion", "0.00005"));
     DiscreteGenerator operationchooser = new DiscreteGenerator();
     if (insertproportion > 0.0D)
       operationchooser.addValue(insertproportion, "INSERT");

@@ -620,7 +620,7 @@ public class Client {
       Map<String, Long[]> gcs = Utils.getGCStatst();
       long totalGCCount = 0L;
       long totalGCTime = 0L;
-      for (Map.Entry<String, Long[]> entry : gcs.entrySet()) {
+      for (Entry<String, Long[]> entry : gcs.entrySet()) {
         textMeasurementsExporter.write("TOTAL_GCS_" + (String)entry.getKey(), "Count", ((Long[])entry.getValue())[0].longValue());
         textMeasurementsExporter.write("TOTAL_GC_TIME_" + (String)entry.getKey(), "Time(ms)", ((Long[])entry.getValue())[1].longValue());
         textMeasurementsExporter.write("TOTAL_GC_TIME_%_" + (String)entry.getKey(), "Time(%)", ((Long[])entry.getValue())[1].longValue() / runtime * 100.0D);
@@ -779,7 +779,7 @@ public class Client {
     }
     props.setProperty("dotransactions", String.valueOf(dotransactions));
     long maxExecutionTime = Integer.parseInt(props.getProperty("maxexecutiontime", "0"));
-    threadcount = Integer.parseInt(props.getProperty("threadcount", "10"));
+    threadcount = Integer.parseInt(props.getProperty("threadcount", "1"));
     String dbname = props.getProperty("db", "com.yahoo.ycsb.BasicDB");
     target = Integer.parseInt(props.getProperty("target", "0"));
     double targetperthreadperms = -1.0D;
@@ -892,7 +892,7 @@ public class Client {
         terminator.start();
       }
       opsDone = 0;
-      for (Map.Entry<Thread, ClientThread> entry : threads.entrySet()) {
+      for (Entry<Thread, ClientThread> entry : threads.entrySet()) {
         try {
           ((Thread)entry.getKey()).join();
           opsDone += ((ClientThread)entry.getValue()).getOpsDone();

@@ -35,10 +35,8 @@ public final class DBFactory {
     DB ret;
 
     try {
-     // Class dbclass = classLoader.loadClass(dbname);
-
-//      ret = (DB) dbclass.newInstance();
-      ret = new IoTDBClient();
+      Class<?> dbclass = classLoader.loadClass(dbname);
+      ret = (DB)dbclass.newInstance();
     } catch (Exception e) {
       e.printStackTrace();
       return null;
