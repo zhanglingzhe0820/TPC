@@ -1,8 +1,7 @@
 #!/bin/bash
 
 echo "Enter client file"
-
-DATABASE_RECORDS_COUNT=$1
+RECORDS_COUNT=$1
 prefix=$2
 i=$3
 clientId=$4
@@ -35,11 +34,11 @@ operation_count_string=`grep operationcount $PWD/tpcx-iot/workloads/$WORKLOAD`
 DATABASE_RECORDS_COUNT=$(echo $operation_count_string | cut -d'=' -f2)
 # Invoke the instance.sh here. 
 
-echo ">>>>>>>> $PWD/TPC-IoT-instances.sh $DATABASE_RECORDS_COUNT $NUM_INSTANCES $NUM_THREADS $INSERT_START $clientId $DATABASE_CLIENT $LOGFILE_NAME"
-$PWD/TPC-IoT-instances.sh $DATABASE_RECORDS_COUNT $NUM_INSTANCES $NUM_THREADS $INSERT_START $clientId $DATABASE_CLIENT $PWD $SUT_PARAMETERS $LOGFILE_NAME
+echo ">>>>>>>> $PWD/TPC-IoT-instances.sh $RECORDS_COUNT $NUM_INSTANCES $NUM_THREADS $INSERT_START $clientId $DATABASE_CLIENT $LOGFILE_NAME"
+$PWD/TPC-IoT-instances.sh $RECORDS_COUNT $NUM_INSTANCES $NUM_THREADS $INSERT_START $clientId $DATABASE_CLIENT $PWD $SUT_PARAMETERS $LOGFILE_NAME
 
 #  Command for running workload IoT based on the YCSB params
-#(time  $PWD/tpcx-iot/bin/tpcx-iot run $DATABASE_CLIENT -P $PWD/tpcx-iot/workloads/$WORKLOAD -p columnfamily=cf -p recordcount=$DATABASE_RECORDS_COUNT -p client=$clientId -threads $NUM_THREADS) 2> >(tee $PWD/logs/IoT-Workload-run-time-$LOGFILE_NAME$i.txt)
+#(time  $PWD/tpcx-iot/bin/tpcx-iot run $DATABASE_CLIENT -P $PWD/tpcx-iot/workloads/$WORKLOAD -p columnfamily=cf -p recordcount=$RECORDS_COUNT -p client=$clientId -threads $NUM_THREADS) 2> >(tee $PWD/logs/IoT-Workload-run-time-$LOGFILE_NAME$i.txt)
 
 result=$?
 
